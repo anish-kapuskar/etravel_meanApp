@@ -1,0 +1,30 @@
+<app-header></app-header>
+<!--images imported from pixabay-->
+  <!--../../assets/loginpage.jpg-->
+
+    <div class ="card" id="container">
+		<h3 style="text-align: center">LOGIN</h3>
+    <form #f="ngForm" (ngSubmit)="findUser(f.value)" class="label_userName">
+      <div class="form-group">
+        <label for="userName">Email</label>
+        <input class="form-control" type="text" autocomplete="off" name="userName" id="userName" [(ngModel)]="userName"/>
+      </div>
+      <br/>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input class="form-control" type="password" autocomplete="off" name="password" id="password" [(ngModel)]="password"/>
+      </div>
+      <br/>
+      <div>
+        <button type="submit" class="btn btn-primary"><span class="fa fa-sign-in"></span>&nbsp;&nbsp;Login</button>
+  <button class="btn btn-outline-primary" (click)="signInWithFB()" style="float: right"><span class="fa fa-facebook"></span>&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Sign in with Facebook</button>
+		 <br><br><br> Haven't registered? <br> <button class="btn btn-primary" routerLink="/signup"><span class="fa fa-user-plus"></span>&nbsp;&nbsp;Register Account</button>
+
+      </div>
+    </form>
+    </div>
+    <br>
+    <br>
+
+  <br/>
+

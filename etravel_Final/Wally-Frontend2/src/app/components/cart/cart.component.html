@@ -1,0 +1,68 @@
+<app-header></app-header>
+<section class="cards" style="margin-left: 145px; background-color: #95a5a6;margin-left: 0px;">
+
+       <div class="card d-flex" style="width: 1100px; margin-left:280px ; background-color: #F8EFBA">
+
+
+
+        <div class="card-body" style="border-radius: 20px;">
+          <h5 class="card-title" style="text-align: center">Product Info</h5>
+          <p class="card-text"></p>
+            <div style="float: left">
+            <p>Package :<span style="color: green"> &nbsp;&nbsp;&nbsp;&nbsp;{{ name$ | async }}</span></p>
+
+				<p>Price : <span style="color: green">&nbsp;&nbsp;&nbsp;&nbsp;{{ price$ | async }}</span></p>
+
+				<p>Departure :<span style="color: green">&nbsp;&nbsp;&nbsp;&nbsp;{{ departure$ | async }}</span></p>
+				<p>Period :<span style="color: green">&nbsp;&nbsp;&nbsp;&nbsp;{{ select$ | async }} </span></p><br>
+        <img  width="50%" height="auto" src="{{ image$ | async }}"><br><br>
+                   <a style="background-color: #CAD3C8; margin-left: 450px" class="btn btn-primary" (click)="downloadPdf()">Download as PDF</a>
+                </div>
+
+
+
+        </div>
+
+      </div>
+
+      <div class="row" style="margin-left:200px ">
+
+      <div class="col-sm-5 d-flex">
+    <div class="card d-flex" style="width: 500px; margin-top:40px;margin-bottom: 40px ">
+
+
+
+        <div class="card-body" style=" background-color: #F8EFBA">
+          <h5 class="card-title" style="text-align: center">Shipping Info</h5>
+
+			<h5>Shipping Details:</h5><br>
+			<p class="card-text"><h6>Customer address:<span style="color: green">&nbsp;&nbsp;&nbsp;&nbsp;{{ creds.lastName }}</span></h6><br><br><br>
+        </div>
+
+      </div>
+    </div>
+        <div class="col-sm-5 d-flex">
+    <div class="card d-flex" style="width: 500px;margin-top:40px;margin-bottom: 40px">
+
+
+
+        <div class="card-body" style=" background-color: #F8EFBA">
+          <h5 class="card-title" style="text-align: center">Billing Info</h5>
+          <p class="card-text"></p>
+<h5>Customer Details:</h5>
+			<h6>Customer Full Name :<span style="color: green"> &nbsp;&nbsp;&nbsp;&nbsp;{{creds.firstName}}</span></h6>
+
+			<h6>Email ID : <span style="color: green">&nbsp;&nbsp;&nbsp;&nbsp;{{creds.userName}}</span></h6>
+        </div>
+
+
+
+      </div>
+    </div>
+
+
+
+    </div>
+
+	 <button class="btn btn-success" routerLink="/paypal" style="margin-left: 740px">Proceed for payment</button>
+</section>
