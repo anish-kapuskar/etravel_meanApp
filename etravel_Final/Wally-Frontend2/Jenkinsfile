@@ -49,7 +49,7 @@ pipeline {
                 // Build the AngularJS application
                 bat '''
                 set PATH=%NODEJS_HOME%;%NPM_GLOBAL%;%PATH%
-                ng build --prod
+                node_modules\\.bin\\ng build --prod
                 '''
             }
         }
@@ -60,7 +60,7 @@ pipeline {
                 // Normally you wouldn't use `ng serve` for production, but as per the requirement
                 bat '''
                 set PATH=%NODEJS_HOME%;%NPM_GLOBAL%;%PATH%
-                start /B ng serve --host 0.0.0.0 --port 4200
+                start /B node_modules\\.bin\\ng serve --host 0.0.0.0 --port 4200
                 '''
             }
         }
