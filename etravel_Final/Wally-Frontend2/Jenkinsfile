@@ -2,35 +2,42 @@ pipeline {
     agent any
 
     environment {
-        // Define any environment variables here
-        NODE_VERSION = '14.x' // Specify Node.js version
+        NODE_VERSION = '14.17.0' // Specify the exact Node.js version
+        NODE_HOME = "C:\\Program Files\\nodejs"
     }
 
     stages {
         stage('Checkout') {
             steps {
                 // Clone the repository from GitHub
-                git 'https://github.com/anish-kapuskar/etravel_meanApp.git' 
+                git 'https://github.com/your-repo/your-angularjs-app.git'
             }
         }
 
         stage('Install Node.js') {
             steps {
-                // Install Node.js
+                // Download and install Node.js
                 bat '''
                 @echo off
-                curl -o nodejs-installer.msi https://nodejs.org/dist/v14.17.0/node-v14.17.0-x64.msi
+                curl -o nodejs-installer.msi https://nodejs.org/dist/v%NODE_VERSION%/node-v%NODE_VERSION%-x64.msi
                 msiexec /i nodejs-installer.msi /quiet /norestart
+                if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
+                '''
+                
+                // Update the PATH environment variable
+                bat '''
+                setx PATH "%NODE_HOME%;%PATH%"
                 '''
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                // Install Angular CLI and project dependencies
+                // Ensure npm is recognized and install Angular CLI and project dependencies
                 bat '''
-                npm install -g @angular/cli
-                npm install
+                @echo off
+                "%NODE_HOME%\\npm" install -g @angular/cli
+                "%NODE_HOME%\\npm" install
                 '''
             }
         }
@@ -38,7 +45,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Build the AngularJS application
-                bat 'ng build --prod'
+                bat '"%NODE_HOME%\\ng" build --prod'
             }
         }
 
@@ -46,7 +53,7 @@ pipeline {
             steps {
                 // Serve the application on localhost:4200
                 // Normally you wouldn't use `ng serve` for production, but as per the requirement
-                bat 'start /B ng serve --host 0.0.0.0 --port 4200'
+                bat 'start /B "%NODE_HOME%\\ng" serve --host 0.0.0.0 --port 4200'
             }
         }
     }
