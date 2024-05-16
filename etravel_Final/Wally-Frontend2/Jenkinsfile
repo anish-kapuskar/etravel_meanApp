@@ -75,7 +75,6 @@ pipeline {
         always {
             // Clean up and archive artifacts if needed
             archiveArtifacts artifacts: 'dist/**', allowEmptyArchive: true
-            cleanWs()
         }
         success {
             echo 'Build and deployment succeeded!'
