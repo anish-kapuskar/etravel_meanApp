@@ -65,7 +65,7 @@ pipeline {
                 set PATH=%NODEJS_HOME%;%NPM_GLOBAL%;%PATH%
                 cd etravel_Final\\Wally-Frontend2
                 dir
-                start /B node_modules\\.bin\\ng serve --host 0.0.0.0 --port 4200
+                node_modules\\.bin\\ng serve --host 0.0.0.0 --port 4200
                 '''
             }
         }
