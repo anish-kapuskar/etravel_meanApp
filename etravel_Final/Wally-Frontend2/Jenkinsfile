@@ -1,0 +1,67 @@
+pipeline {
+    agent any
+
+    environment {
+        // Define any environment variables here
+        NODE_VERSION = '14.x' // Specify Node.js version
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Clone the repository from GitHub
+                git 'https://github.com/anish-kapuskar/etravel_meanApp.git' 
+            }
+        }
+
+        stage('Install Node.js') {
+            steps {
+                // Install Node.js
+                bat '''
+                @echo off
+                curl -o nodejs-installer.msi https://nodejs.org/dist/v14.17.0/node-v14.17.0-x64.msi
+                msiexec /i nodejs-installer.msi /quiet /norestart
+                '''
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                // Install Angular CLI and project dependencies
+                bat '''
+                npm install -g @angular/cli
+                npm install
+                '''
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Build the AngularJS application
+                bat 'ng build --prod'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                // Serve the application on localhost:4200
+                // Normally you wouldn't use `ng serve` for production, but as per the requirement
+                bat 'start /B ng serve --host 0.0.0.0 --port 4200'
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up and archive artifacts if needed
+            archiveArtifacts artifacts: 'dist/**', allowEmptyArchive: true
+            cleanWs()
+        }
+        success {
+            echo 'Build and deployment succeeded!'
+        }
+        failure {
+            echo 'Build or deployment failed.'
+        }
+    }
+}
