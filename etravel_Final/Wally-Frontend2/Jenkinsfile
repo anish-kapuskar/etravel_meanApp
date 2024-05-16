@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         NODE_VERSION = '14.17.0' // Specify the exact Node.js version
-        NODE_HOME = "C:\\Program Files\\nodejs"
     }
 
     stages {
@@ -23,10 +22,10 @@ pipeline {
                 msiexec /i nodejs-installer.msi /quiet /norestart
                 if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
                 '''
-                
-                // Update the PATH environment variable
+
+                // Ensure PATH is updated
                 bat '''
-                setx PATH "%NODE_HOME%;%PATH%"
+                setx PATH "%ProgramFiles%\\nodejs;%PATH%"
                 '''
             }
         }
@@ -36,9 +35,10 @@ pipeline {
                 // Install Angular CLI globally and project dependencies
                 bat '''
                 @echo off
-                set PATH=%NODE_HOME%;%PATH%
-                npm install -g @angular/cli
-                npm install
+                set "NPM_GLOBAL=%APPDATA%\\npm"
+                "%ProgramFiles%\\nodejs\\npm" install -g @angular/cli
+                "%ProgramFiles%\\nodejs\\npm" install
+                setx PATH "%NPM_GLOBAL%;%PATH%"
                 '''
             }
         }
@@ -50,26 +50,4 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            steps {
-                // Serve the application on localhost:4200
-                // Normally you wouldn't use `ng serve` for production, but as per the requirement
-                bat 'start /B ng serve --host 0.0.0.0 --port 4200'
-            }
-        }
-    }
-
-    post {
-        always {
-            // Clean up and archive artifacts if needed
-            archiveArtifacts artifacts: 'dist/**', allowEmptyArchive: true
-            cleanWs()
-        }
-        success {
-            echo 'Build and deployment succeeded!'
-        }
-        failure {
-            echo 'Build or deployment failed.'
-        }
-    }
-}
+     
