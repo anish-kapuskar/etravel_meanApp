@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         NODE_VERSION = '14.17.0' // Specify the exact Node.js version
+        NODEJS_HOME = "C:\\Program Files\\nodejs"
+        NPM_GLOBAL = "C:\\Users\\%USERNAME%\\AppData\\Roaming\\npm"
     }
 
     stages {
@@ -23,9 +25,9 @@ pipeline {
                 if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
                 '''
 
-                // Ensure PATH is updated
+                // Update the PATH environment variable
                 bat '''
-                setx PATH "%ProgramFiles%\\nodejs;%PATH%"
+                setx PATH "%NODEJS_HOME%;%NPM_GLOBAL%;%PATH%"
                 '''
             }
         }
@@ -35,10 +37,9 @@ pipeline {
                 // Install Angular CLI globally and project dependencies
                 bat '''
                 @echo off
-                set "NPM_GLOBAL=%APPDATA%\\npm"
-                "%ProgramFiles%\\nodejs\\npm" install -g @angular/cli
-                "%ProgramFiles%\\nodejs\\npm" install
-                setx PATH "%NPM_GLOBAL%;%PATH%"
+                set PATH=%NODEJS_HOME%;%NPM_GLOBAL%;%PATH%
+                npm install -g @angular/cli
+                npm install
                 '''
             }
         }
@@ -46,8 +47,36 @@ pipeline {
         stage('Build') {
             steps {
                 // Build the AngularJS application
-                bat 'ng build --prod'
+                bat '''
+                set PATH=%NODEJS_HOME%;%NPM_GLOBAL%;%PATH%
+                ng build --prod
+                '''
             }
         }
 
-     
+        stage('Deploy') {
+            steps {
+                // Serve the application on localhost:4200
+                // Normally you wouldn't use `ng serve` for production, but as per the requirement
+                bat '''
+                set PATH=%NODEJS_HOME%;%NPM_GLOBAL%;%PATH%
+                start /B ng serve --host 0.0.0.0 --port 4200
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up and archive artifacts if needed
+            archiveArtifacts artifacts: 'dist/**', allowEmptyArchive: true
+            cleanWs()
+        }
+        success {
+            echo 'Build and deployment succeeded!'
+        }
+        failure {
+            echo 'Build or deployment failed.'
+        }
+    }
+}
