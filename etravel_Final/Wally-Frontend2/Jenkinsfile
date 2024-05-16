@@ -4,7 +4,6 @@ pipeline {
     environment {
         NODE_VERSION = '14.17.0' // Specify the exact Node.js version
         NODE_HOME = "C:\\Program Files\\nodejs"
-        NPM_GLOBAL = "%APPDATA%\\npm" // Global npm install directory
     }
 
     stages {
@@ -27,18 +26,19 @@ pipeline {
                 
                 // Update the PATH environment variable
                 bat '''
-                setx PATH "%NODE_HOME%;%NPM_GLOBAL%;%PATH%"
+                setx PATH "%NODE_HOME%;%PATH%"
                 '''
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Install Angular CLI and Dependencies') {
             steps {
-                // Ensure npm is recognized and install Angular CLI and project dependencies
+                // Install Angular CLI globally and project dependencies
                 bat '''
                 @echo off
-                "%NODE_HOME%\\npm" install -g @angular/cli
-                "%NODE_HOME%\\npm" install
+                set PATH=%NODE_HOME%;%PATH%
+                npm install -g @angular/cli
+                npm install
                 '''
             }
         }
@@ -46,7 +46,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Build the AngularJS application
-                bat '"%NPM_GLOBAL%\\ng" build --prod'
+                bat 'ng build --prod'
             }
         }
 
@@ -54,7 +54,7 @@ pipeline {
             steps {
                 // Serve the application on localhost:4200
                 // Normally you wouldn't use `ng serve` for production, but as per the requirement
-                bat 'start /B "%NPM_GLOBAL%\\ng" serve --host 0.0.0.0 --port 4200'
+                bat 'start /B ng serve --host 0.0.0.0 --port 4200'
             }
         }
     }
