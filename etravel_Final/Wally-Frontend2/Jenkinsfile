@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Clone the repository from GitHub
-                git 'https://github.com/your-repo/your-angularjs-app.git'
+                git 'https://github.com/anish-kapuskar/etravel_meanApp.git'
             }
         }
 
